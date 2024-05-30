@@ -74,7 +74,7 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
     }
 
     const exercise = new Exercise({
-      _id: req.params._id,
+      userId: req.params._id,
       description: req.body.description,
       duration: req.body.duration,
       date: req.body.date ? new Date(req.body.date).toString() : new Date().toString()
@@ -103,7 +103,7 @@ app.get('/api/users/:_id/logs', async (req, res) => {
       return res.status(404).json({ error: 'User doesn\'t exist.' });
     }
 
-    const exercises = await Exercise.find({ _id: userId }, '-_id description duration date');
+    const exercises = await Exercise.find({ userId: userId }, '-_id description duration date');
 
     res.status(200).json({
       _id: userId,
