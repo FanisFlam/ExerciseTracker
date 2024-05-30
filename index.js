@@ -70,7 +70,7 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
     const data = await User.findById(req.params._id);
     console.log(data);
     if(!data){
-      return res.status(404).json({ error: 'There is no such user.' });
+      return res.status(404).json({ error: 'User doesn\'t exist.' });
     }
 
     const exercise = new Exercise({
@@ -94,21 +94,28 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
   }
 });
 
-// app.get('/api/users/:_id/logs', async (req, res) => {
-//   try {
-//     const userId = req.params._id;
+app.get('/api/users/:_id/logs', async (req, res) => {
+  try {
+    const userId = req.params._id;
+    const data = await User.findOne({ _id: userId });
     
-//     const data = await Exercise.find({ _id: userId });
-//     if(data){
-//       return res.status(200).json({
-//         _id: userId
-//         // CONTINUE THIS
-//       });
-//     }
-//   } catch (err) {
-//     res.status(500).json({ error: err });
-//   }
-// });
+    if(!data){
+      return res.status(404).json({ error: 'User doesn\'t exist.' });
+    }
+
+    const exercises = await Exercise.find({ _id: userId }, '-_id description duration date');
+
+    res.status(200).json({
+      _id: userId,
+      username: data.username,
+      count: exercises.length,
+      log: exercises
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+});
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
