@@ -77,7 +77,7 @@ app.post('/api/users/:_id/exercises', async (req, res) => {
       userId: req.params._id,
       description: req.body.description,
       duration: req.body.duration,
-      date: req.body.date ? new Date(req.body.date).toString() : new Date().toString()
+      date: req.body.date ? new Date(req.body.date).toDateString() : new Date().toDateString()
     });
 
     const result = await exercise.save();
